@@ -1,0 +1,65 @@
+/* Анимации для уведомлений */
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+/* Стили для заблокированных элементов */
+[data-focus-guard-comments="true"],
+[data-focus-guard-recommendations="true"],
+[data-focus-guard-sidebar="true"],
+[data-focus-guard-shorts="true"],
+[data-focus-guard-feed="true"],
+[data-focus-guard-vk-nav="true"] {
+  display: none !important;
+}
+
+/* Оптимизация для видео-плеера */
+[data-expanded="true"] {
+  width: 100% !important;
+  max-width: min(1240px, calc(100vw - 96px)) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Скрываем боковую панель на страницах видео */
+.video-page__sidebar[data-focus-guard-sidebar="true"],
+.player__sidebar[data-focus-guard-sidebar="true"] {
+  display: none !important;
+}
+
+/* Адаптация основного контента */
+.video-page__content {
+  transition: all 0.3s ease;
+}
+
+/* Если боковая панель скрыта, расширяем основной контент */
+body:has([data-focus-guard-sidebar="true"]) .video-page__main {
+  width: 100% !important;
+  max-width: min(1240px, calc(100vw - 96px)) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Дополнительные стили для чистого интерфейса */
+.focus-guard-active {
+  filter: none !important;
+}
+

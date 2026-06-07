@@ -1,0 +1,669 @@
+﻿<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <style>
+    :root {
+      --bg: #121826;
+      --panel: rgba(248, 250, 252, 0.66);
+      --panel-soft: rgba(236, 240, 247, 0.58);
+      --ink: #172033;
+      --muted: #687386;
+      --line: rgba(112, 125, 150, 0.22);
+      --accent: #4f63ff;
+      --accent-dark: #3a3fc7;
+      --accent-soft: #e8e7ff;
+      --warn: #6b5a31;
+      --shadow: 0 22px 55px rgba(8, 13, 26, 0.28);
+      --card-shadow: 0 10px 26px rgba(31, 45, 78, 0.12);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 342px;
+      min-height: 560px;
+      padding: 16px;
+      font-family: Aptos, Verdana, Tahoma, sans-serif;
+      background:
+        radial-gradient(circle at 8% 0%, rgba(90, 125, 255, 0.34), transparent 34%),
+        radial-gradient(circle at 92% 18%, rgba(126, 87, 255, 0.34), transparent 32%),
+        radial-gradient(circle at 50% 100%, rgba(75, 55, 180, 0.22), transparent 36%),
+        linear-gradient(160deg, #0f1728 0%, var(--bg) 54%, #202a3d 100%);
+      color: var(--ink);
+    }
+
+    .shell {
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 22px;
+      background: rgba(247, 249, 253, 0.64);
+      backdrop-filter: blur(18px);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .shell::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(90deg, rgba(255, 255, 255, 0.26), transparent 28%),
+        radial-gradient(circle at 70% 0%, rgba(68, 109, 255, 0.16), transparent 34%);
+      opacity: 0.8;
+    }
+
+    .header {
+      padding: 18px 18px 16px;
+      background:
+        radial-gradient(circle at 90% 0%, rgba(255, 255, 255, 0.16), transparent 28%),
+        linear-gradient(135deg, #151d30 0%, #3554d1 58%, #5b4bdb 100%);
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::after {
+      content: "";
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      right: -64px;
+      top: -72px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    .brand-row {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      margin-bottom: 10px;
+    }
+
+    .logo {
+      width: 38px;
+      height: 38px;
+      object-fit: contain;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.16);
+      padding: 5px;
+    }
+
+    h1 {
+      font-size: 20px;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      font-weight: 800;
+    }
+
+    .subtitle {
+      max-width: 255px;
+      font-size: 12px;
+      line-height: 1.45;
+      color: rgba(255, 255, 255, 0.78);
+    }
+
+    .content {
+      padding: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .section {
+      margin-bottom: 14px;
+    }
+
+    .section:last-child {
+      margin-bottom: 0;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 9px;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--accent-dark);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .section-title::before {
+      content: "";
+      width: 18px;
+      height: 2px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .panel,
+    .setting {
+      background:
+        radial-gradient(circle at top left, rgba(255, 255, 255, 0.72), transparent 42%),
+        linear-gradient(145deg, rgba(255, 255, 255, 0.68), rgba(235, 239, 250, 0.5));
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: var(--card-shadow);
+    }
+
+    .panel {
+      padding: 13px;
+    }
+
+    .pomodoro-panel {
+      background:
+        radial-gradient(circle at 12% 0%, rgba(68, 109, 255, 0.16), transparent 34%),
+        linear-gradient(155deg, rgba(255, 255, 255, 0.72), rgba(238, 239, 255, 0.58) 55%, rgba(225, 229, 250, 0.52) 100%);
+    }
+
+    .pomodoro-time {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 42px;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--ink);
+      font-variant-numeric: tabular-nums;
+      margin-bottom: 7px;
+      letter-spacing: -0.04em;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+    }
+
+    .pomodoro-status {
+      min-height: 32px;
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.4;
+      margin-bottom: 12px;
+    }
+
+    .duration-grid,
+    .pomodoro-actions,
+    .extra-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .duration-grid {
+      margin-bottom: 10px;
+    }
+
+    .pomodoro-actions {
+      margin-bottom: 8px;
+    }
+
+    .extra-actions {
+      margin-bottom: 11px;
+    }
+
+    .duration-field label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: 0.02em;
+    }
+
+    .duration-field input {
+      width: 100%;
+      height: 36px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: rgba(255, 255, 255, 0.66);
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 800;
+      text-align: center;
+      outline: none;
+    }
+
+    .duration-field input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-soft);
+    }
+
+    .duration-field input:disabled {
+      opacity: 0.55;
+    }
+
+    button {
+      min-height: 36px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 800;
+      transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+    }
+
+    button:disabled {
+      cursor: default;
+      opacity: 0.45;
+      transform: none;
+    }
+
+    .primary-btn {
+      background: linear-gradient(135deg, #4f63ff 0%, #6b55ff 58%, #7b4dff 100%);
+      border: 1px solid var(--accent);
+      color: #fff;
+      box-shadow: 0 8px 18px rgba(68, 109, 255, 0.24);
+    }
+
+    .secondary-btn,
+    .refresh-btn {
+      background: rgba(255, 255, 255, 0.66);
+      border: 1px solid var(--line);
+      color: var(--ink);
+      box-shadow: 0 5px 14px rgba(31, 45, 78, 0.08);
+    }
+
+    .refresh-btn {
+      width: 100%;
+      margin-top: 2px;
+      color: var(--accent-dark);
+      border-color: rgba(68, 109, 255, 0.32);
+    }
+
+    #resetStatsBtn {
+      width: 100%;
+      padding-inline: 14px;
+      white-space: nowrap;
+    }
+
+    button:not(:disabled):hover {
+      transform: translateY(-1px);
+      border-color: var(--accent);
+    }
+
+    .auto-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--ink);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .stats-panel {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .stat-item {
+      padding: 9px 6px;
+      text-align: center;
+      background:
+        linear-gradient(160deg, rgba(255, 255, 255, 0.62), rgba(234, 238, 249, 0.5)),
+        var(--panel-soft);
+      border: 1px solid var(--line);
+      border-radius: 13px;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
+    }
+
+    .stats-label {
+      font-size: 10px;
+      color: var(--muted);
+      margin-bottom: 3px;
+    }
+
+    .stats-value {
+      font-size: 14px;
+      color: var(--ink);
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .setting {
+      margin-bottom: 8px;
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .setting::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(115deg, rgba(255, 255, 255, 0.72) 0%, rgba(255, 255, 255, 0.14) 24%, transparent 48%),
+        radial-gradient(circle at 88% 8%, rgba(255, 255, 255, 0.58), transparent 24%),
+        radial-gradient(circle at 12% 100%, rgba(68, 109, 255, 0.12), transparent 28%);
+      opacity: 0.72;
+    }
+
+    .setting::after {
+      content: "";
+      position: absolute;
+      left: 14px;
+      right: 14px;
+      top: 1px;
+      height: 1px;
+      pointer-events: none;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.78), transparent);
+    }
+
+    .setting:hover {
+      border-color: rgba(68, 109, 255, 0.34);
+      background:
+        radial-gradient(circle at top left, rgba(68, 109, 255, 0.1), transparent 38%),
+        linear-gradient(145deg, rgba(255, 255, 255, 0.72), rgba(232, 237, 250, 0.56));
+      transform: translateY(-1px);
+      box-shadow: 0 14px 28px rgba(31, 45, 78, 0.14);
+    }
+
+    .setting:hover::before {
+      opacity: 0.95;
+    }
+
+    .setting-info {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      flex: 1;
+      min-width: 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    .setting-mark {
+      flex: 0 0 auto;
+      width: 7px;
+      height: 34px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #4f63ff, #8b7dff);
+      border: 1px solid rgba(68, 109, 255, 0.18);
+      box-shadow: 0 6px 14px rgba(68, 109, 255, 0.2);
+    }
+
+    .setting-label {
+      font-size: 13px;
+      font-weight: 900;
+      color: var(--ink);
+      line-height: 1.25;
+    }
+
+    .setting-desc {
+      font-size: 10.5px;
+      color: var(--muted);
+      margin-top: 3px;
+      line-height: 1.35;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 46px;
+      height: 26px;
+      flex: 0 0 auto;
+      z-index: 1;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      inset: 0;
+      cursor: pointer;
+      background-color: #cfd6e4;
+      transition: 0.25s;
+      border-radius: 999px;
+      border: 1px solid rgba(23, 32, 51, 0.1);
+    }
+
+    .slider::before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 2px;
+      top: 2px;
+      background-color: #ffffff;
+      transition: 0.25s;
+      border-radius: 50%;
+      box-shadow: 0 2px 6px rgba(23, 33, 28, 0.18);
+    }
+
+    input:checked + .slider {
+      background: linear-gradient(135deg, #4f63ff, #6b55ff, #7b4dff);
+    }
+
+    input:checked + .slider::before {
+      transform: translateX(20px);
+    }
+
+    .vk-menu-card {
+      display: block;
+      cursor: default;
+    }
+
+    .vk-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px 10px;
+      margin-top: 10px;
+      font-size: 11.5px;
+      color: var(--ink);
+      position: relative;
+      z-index: 1;
+    }
+
+    .vk-grid label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 20px;
+    }
+
+    .vk-grid input {
+      width: 14px;
+      height: 14px;
+      accent-color: var(--accent);
+    }
+
+    .note {
+      margin-top: 10px;
+      padding: 10px 11px;
+      background:
+        linear-gradient(135deg, rgba(255, 255, 255, 0.56), rgba(232, 237, 250, 0.58)),
+        rgba(246, 248, 252, 0.48);
+      border: 1px solid rgba(68, 109, 255, 0.16);
+      border-radius: 14px;
+      font-size: 10.5px;
+      color: #526078;
+      line-height: 1.4;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="header">
+      <div class="brand-row">
+        <img class="logo" src="icons/icon128.png" alt="Focus Guard">
+        <h1>Focus Guard</h1>
+      </div>
+      <div class="subtitle">Блокировка отвлекающего контента на YouTube, Rutube, VK Видео и ВКонтакте.</div>
+    </div>
+
+    <div class="content">
+      <div class="section pomodoro-section">
+        <div class="section-title">Таймер</div>
+        <div class="panel pomodoro-panel">
+          <div class="pomodoro-time" id="pomodoroTime">25:00</div>
+          <div class="pomodoro-status" id="pomodoroStatus">Старт включает блокировки, затем запускается отдых.</div>
+          <div class="duration-grid">
+            <div class="duration-field">
+              <label for="pomodoroMinutes">Фокус, мин</label>
+              <input id="pomodoroMinutes" type="number" min="1" max="180" step="1" value="25">
+            </div>
+            <div class="duration-field">
+              <label for="breakMinutes">Отдых, мин</label>
+              <input id="breakMinutes" type="number" min="1" max="180" step="1" value="5">
+            </div>
+          </div>
+          <div class="pomodoro-actions">
+            <button class="primary-btn" id="startPomodoroBtn" type="button">Старт</button>
+            <button class="secondary-btn" id="stopPomodoroBtn" type="button" disabled>Стоп</button>
+          </div>
+          <div class="extra-actions">
+            <button class="secondary-btn" id="addFiveBtn" type="button" disabled>+5 минут</button>
+            <button class="secondary-btn" id="skipBreakBtn" type="button" disabled>Пропустить отдых</button>
+          </div>
+          <label class="auto-row">
+            <span>Автостарт фокуса после отдыха</span>
+            <span class="switch">
+              <input type="checkbox" id="autoStartFocus">
+              <span class="slider"></span>
+            </span>
+          </label>
+        </div>
+      </div>
+
+      <div class="section stats-section">
+        <div class="section-title">Статистика</div>
+        <div class="stats-panel">
+          <div class="stat-item">
+            <div class="stats-label">Сегодня</div>
+            <div class="stats-value" id="focusStatsToday">0 мин</div>
+          </div>
+          <div class="stat-item">
+            <div class="stats-label">Всего</div>
+            <div class="stats-value" id="focusStatsTotal">0 мин</div>
+          </div>
+          <div class="stat-item">
+            <div class="stats-label">Сессий</div>
+            <div class="stats-value" id="focusSessionsToday">0</div>
+          </div>
+        </div>
+        <button class="secondary-btn" id="resetStatsBtn" type="button">Сбросить статистику</button>
+      </div>
+
+      <div class="section settings-section">
+        <div class="section-title">Блокировки</div>
+
+        <div class="setting">
+          <div class="setting-info">
+            <div class="setting-mark"></div>
+            <div>
+              <div class="setting-label">Скрыть рекомендации</div>
+              <div class="setting-desc">Убирает список рекомендуемых видео справа.</div>
+            </div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="blockRecommendations">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting">
+          <div class="setting-info">
+            <div class="setting-mark"></div>
+            <div>
+              <div class="setting-label">Скрыть Shorts</div>
+              <div class="setting-desc">Убирает короткие видео и вкладки с ними.</div>
+            </div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="blockShorts">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting">
+          <div class="setting-info">
+            <div class="setting-mark"></div>
+            <div>
+              <div class="setting-label">Скрыть ленту VK</div>
+              <div class="setting-desc">Быстро убирает поток публикаций во ВКонтакте.</div>
+            </div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="blockFeed">
+            <span class="slider"></span>
+          </label>
+        </div>
+
+        <div class="setting vk-menu-card">
+          <div class="setting-info">
+            <div class="setting-mark"></div>
+            <div>
+              <div class="setting-label">VK меню</div>
+              <div class="setting-desc">Выборочно скрывает отдельные разделы бокового меню.</div>
+            </div>
+          </div>
+          <div class="vk-grid">
+            <label><input type="checkbox" data-vk-section="profile"> Профиль</label>
+            <label><input type="checkbox" data-vk-section="feed"> Лента</label>
+            <label><input type="checkbox" data-vk-section="messenger"> Мессенджер</label>
+            <label><input type="checkbox" data-vk-section="calls"> Звонки</label>
+            <label><input type="checkbox" data-vk-section="friends"> Друзья</label>
+            <label><input type="checkbox" data-vk-section="communities"> Сообщества</label>
+            <label><input type="checkbox" data-vk-section="photos"> Фото</label>
+            <label><input type="checkbox" data-vk-section="music"> Музыка</label>
+            <label><input type="checkbox" data-vk-section="video"> Видео</label>
+            <label><input type="checkbox" data-vk-section="clips"> Клипы</label>
+            <label><input type="checkbox" data-vk-section="games"> Игры</label>
+            <label><input type="checkbox" data-vk-section="market"> Маркет</label>
+          </div>
+        </div>
+
+        <div class="setting">
+          <div class="setting-info">
+            <div class="setting-mark"></div>
+            <div>
+              <div class="setting-label">Скрыть комментарии</div>
+              <div class="setting-desc">Убирает обсуждения под видео.</div>
+            </div>
+          </div>
+          <label class="switch">
+            <input type="checkbox" id="blockComments">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <button class="refresh-btn" id="refreshBtn" type="button">Применить сейчас</button>
+
+      <div class="note">
+        После фокус-сессии блокировки выключаются и начинается отдых. Chrome покажет уведомление о смене этапа.
+      </div>
+
+      <div class="footer">
+        Focus Guard работает на Rutube, YouTube, VK Видео и ВКонтакте.
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
